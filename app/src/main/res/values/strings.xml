@@ -2,4 +2,6 @@
     <string name="app_name">Perfect Match</string>
     <string name="str_member_accepted">Member Accepted</string>
     <string name="str_member_declined">Member Declined</string>
+    <string name="str_accept">Accept</string>
+    <string name="str_reject">Reject</string>
 </resources>

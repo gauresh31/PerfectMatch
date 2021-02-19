@@ -1,5 +1,6 @@
 package com.kt.perfectmatch.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 
@@ -9,11 +10,14 @@ public interface MatchDao {
     fun getAll(): List<Matches?>?
 
     @Insert
-    fun insert(matches: Matches?)
-
-    @Delete
-    fun delete(matches: Matches?)
+    fun insert(matches: Matches)
 
     @Update
     fun update(matches: Matches?)
+
+    @Query("DELETE FROM matches")
+    suspend fun deleteAll()
+
+    @get:Query("SELECT * FROM matches")
+    val getAllData: LiveData<List<Matches>>
 }

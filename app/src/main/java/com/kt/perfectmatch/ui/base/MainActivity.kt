@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.kt.perfectmatch.R
 import com.kt.perfectmatch.data.api.APIAdapter
 import com.kt.perfectmatch.db.AppDatabase

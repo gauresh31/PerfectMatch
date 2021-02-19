@@ -26,7 +26,7 @@ class MatchesRecyclerAdapter(mCtx: Context, taskList: List<Matches?>?) :
 
     private lateinit var dbClient: AppDatabase
     private val mCtx: Context = mCtx
-    private val matchesList: List<Matches?>? = taskList
+    private var matchesList: List<Matches?>? = taskList
     private val find = Matches()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TasksViewHolder {
@@ -55,15 +55,24 @@ class MatchesRecyclerAdapter(mCtx: Context, taskList: List<Matches?>?) :
 
         LoadBackground(t?.getPicture(),
         t?.getNat(), holder.clMain).execute()
-
-        if(t?.getInterested().equals(mCtx.getString(R.string.str_member_accepted))){
-            holder.btnAccept.text = mCtx.getString(R.string.str_member_accepted)
-            holder.btnReject.isEnabled = false
-            holder.btnAccept.isEnabled = false
-        } else if(t?.getInterested().equals(mCtx.getString(R.string.str_member_declined))){
-            holder.btnReject.text = mCtx.getString(R.string.str_member_declined)
-            holder.btnReject.isEnabled = false
-            holder.btnAccept.isEnabled = false
+        matchesList = dbClient.matchDao()?.getAll()
+        when {
+            t?.getInterested().equals(mCtx.getString(R.string.str_member_accepted)) -> {
+                holder.btnAccept.text = mCtx.getString(R.string.str_member_accepted)
+                holder.btnReject.isEnabled = false
+                holder.btnAccept.isEnabled = false
+            }
+            t?.getInterested().equals(mCtx.getString(R.string.str_member_declined)) -> {
+                holder.btnReject.text = mCtx.getString(R.string.str_member_declined)
+                holder.btnReject.isEnabled = false
+                holder.btnAccept.isEnabled = false
+            }
+            t?.getInterested() == null -> {
+                holder.btnReject.isEnabled = true
+                holder.btnAccept.isEnabled = true
+                holder.btnAccept.text = mCtx.getString(R.string.str_accept)
+                holder.btnReject.text = mCtx.getString(R.string.str_reject)
+            }
         }
         holder.btnAccept.setOnClickListener {
             t?.setInterested(mCtx.getString(R.string.str_member_accepted))
