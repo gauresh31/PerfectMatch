@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">PerfectMatch</string>
+    <string name="app_name">Perfect Match</string>
+    <string name="str_member_accepted">Member Accepted</string>
+    <string name="str_member_declined">Member Declined</string>
 </resources>

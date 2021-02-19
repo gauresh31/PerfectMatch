@@ -10,5 +10,6 @@ data class Results(
     val name: Name?,
     val location: Location?,
     val picture: Picture?,
-    val dob: Dob?
+    val dob: Dob?,
+    val nat: String?
 )
