@@ -8,11 +8,21 @@ import com.kt.perfectmatch.db.MatchDao
 import com.kt.perfectmatch.db.Matches
 
 class MatchesViewModel(application: Application) : AndroidViewModel(application) {
+    private var mRepository: MatchesRepository = MatchesRepository(application)
     private val matchesDao: MatchDao? = AppDatabase.getDatabase(application)?.matchDao()
-    private val matchesList: LiveData<List<Matches>>? = matchesDao?.getAllData
+    private var matchesList: LiveData<List<Matches>>? = mRepository.getAllMatches()
 
-    suspend fun insert(matches: Matches) {
-        matchesDao?.insert(matches)
+
+    fun getAllMatches(): LiveData<List<Matches>>? {
+        return matchesList
+    }
+
+    fun insert(match: Matches) {
+        mRepository.insert(match)
+    }
+
+    fun getCount() {
+        matchesDao?.getDataCount()
     }
 
     suspend fun update(matches: Matches) {

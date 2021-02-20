@@ -18,6 +18,9 @@ public interface MatchDao {
     @Query("DELETE FROM matches")
     suspend fun deleteAll()
 
-    @get:Query("SELECT * FROM matches")
-    val getAllData: LiveData<List<Matches>>
+    @Query("SELECT * FROM matches")
+    fun getAllData(): LiveData<List<Matches>>
+
+    @Query("SELECT COUNT(id) FROM matches")
+    fun getDataCount(): LiveData<Integer>
 }

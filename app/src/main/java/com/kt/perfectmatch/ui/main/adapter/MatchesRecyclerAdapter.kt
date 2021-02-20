@@ -21,12 +21,12 @@ import java.net.MalformedURLException
 import java.net.URL
 
 
-class MatchesRecyclerAdapter(mCtx: Context, taskList: List<Matches?>?) :
+class MatchesRecyclerAdapter(mCtx: Context) :
     RecyclerView.Adapter<MatchesRecyclerAdapter.TasksViewHolder>() {
 
     private lateinit var dbClient: AppDatabase
     private val mCtx: Context = mCtx
-    private var matchesList: List<Matches?>? = taskList
+    private var matchesList: List<Matches?>? = null
     private val find = Matches()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TasksViewHolder {
@@ -45,7 +45,6 @@ class MatchesRecyclerAdapter(mCtx: Context, taskList: List<Matches?>?) :
 
     override fun onBindViewHolder(holder: TasksViewHolder, position: Int) {
         val t: Matches? = matchesList?.get(position)
-        holder.id = position
         holder.name.text = t?.getFullName()
         holder.email.text = t?.getEmail()
         holder.age.text = t?.getAge()
@@ -92,12 +91,17 @@ class MatchesRecyclerAdapter(mCtx: Context, taskList: List<Matches?>?) :
     }
 
     override fun getItemCount(): Int {
-        return matchesList?.size!!
+        return if (matchesList != null)
+            matchesList!!.size;
+        else 0;
+    }
+
+    fun updateData(matches: List<Matches>) {
+        matchesList = matches
+        notifyDataSetChanged()
     }
 
     class TasksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        var id : Int = 0
 
         val clMain: ConstraintLayout = itemView.findViewById(R.id.cl_main)
         val btnAccept: Button = itemView.findViewById(R.id.btn_accept)
