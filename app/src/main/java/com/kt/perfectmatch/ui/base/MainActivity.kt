@@ -141,7 +141,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private suspend fun saveData(find: Matches) {
         dbClient?.matchDao()?.insert(find)
-//        matchesViewModel.insert(find)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

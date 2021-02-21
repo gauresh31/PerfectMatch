@@ -24,7 +24,7 @@ import java.net.URL
 class MatchesRecyclerAdapter(mCtx: Context) :
     RecyclerView.Adapter<MatchesRecyclerAdapter.TasksViewHolder>() {
 
-    private lateinit var dbClient: AppDatabase
+    private var dbClient: AppDatabase? = null
     private val mCtx: Context = mCtx
     private var matchesList: List<Matches?>? = null
     private val find = Matches()
@@ -35,10 +35,7 @@ class MatchesRecyclerAdapter(mCtx: Context) :
                 R.layout.layout_item_matches,
                 parent, false
             )
-        dbClient = Room.databaseBuilder(
-            mCtx,
-            AppDatabase::class.java, "MyMatches"
-        ).allowMainThreadQueries().build()
+        dbClient = AppDatabase.getDatabase(mCtx)
 
         return TasksViewHolder(view)
     }
@@ -54,7 +51,6 @@ class MatchesRecyclerAdapter(mCtx: Context) :
 
         LoadBackground(t?.getPicture(),
         t?.getNat(), holder.clMain).execute()
-        matchesList = dbClient.matchDao()?.getAll()
         when {
             t?.getInterested().equals(mCtx.getString(R.string.str_member_accepted)) -> {
                 holder.btnAccept.text = mCtx.getString(R.string.str_member_accepted)
@@ -75,7 +71,7 @@ class MatchesRecyclerAdapter(mCtx: Context) :
         }
         holder.btnAccept.setOnClickListener {
             t?.setInterested(mCtx.getString(R.string.str_member_accepted))
-            dbClient.matchDao()?.update(t)
+            dbClient?.matchDao()?.update(t)
             holder.btnReject.isEnabled = false
             holder.btnAccept.isEnabled = false
             holder.btnAccept.text = mCtx.getString(R.string.str_member_accepted)
@@ -83,7 +79,7 @@ class MatchesRecyclerAdapter(mCtx: Context) :
 
         holder.btnReject.setOnClickListener {
             t?.setInterested(mCtx.getString(R.string.str_member_declined))
-            dbClient.matchDao()?.update(t)
+            dbClient?.matchDao()?.update(t)
             holder.btnReject.isEnabled = false
             holder.btnAccept.isEnabled = false
             holder.btnReject.text = mCtx.getString(R.string.str_member_declined)
