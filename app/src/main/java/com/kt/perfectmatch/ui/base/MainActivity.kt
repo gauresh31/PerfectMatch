@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kt.perfectmatch.R
@@ -26,6 +27,7 @@ import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
+    private var matchesList: List<Matches?>? = null
     private lateinit var matchesViewModel: MatchesViewModel
     private lateinit var matchesAdapter: MatchesRecyclerAdapter
     private var matchDao: MatchDao? = null
@@ -40,7 +42,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         init()
-        checkData()
+        fetchLocalData()
+    }
+
+    private fun fetchLocalData() {
+       lifecycleScope.launch {
+            matchesList = matchDao?.getAll()
+            checkData()
+        }
     }
 
     private fun init() {
@@ -59,13 +68,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     matchesAdapter.updateData(requireNotNull(_matches))
                 }
             })
-
         matchDao = dbClient?.matchDao()
     }
 
     private fun checkData() {
-        val matchesList: List<Matches?>? = matchDao?.getAll()
-        if (null != matchesList && matchesList.isNotEmpty()) {
+        if (null != matchesList && matchesList!!.isNotEmpty()) {
             matchesAdapter.updateData(matchesList as List<Matches>)
         } else {
             callAPI(1)
@@ -115,7 +122,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             saveData(find)
                         }
                         if(initVal==1){
-                            checkData()
+                            fetchLocalData()
                         }
                     }
                 } else {
@@ -139,8 +146,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
     }
 
-    private suspend fun saveData(find: Matches) {
-        dbClient?.matchDao()?.insert(find)
+    private fun saveData(find: Matches) {
+//        dbClient?.matchDao()?.insert(find)
+        matchesViewModel.insert(find)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

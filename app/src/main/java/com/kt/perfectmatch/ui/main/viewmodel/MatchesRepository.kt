@@ -13,8 +13,9 @@ class MatchesRepository(application: Application?){
     private var allMatches: LiveData<List<Matches>>? = null
 
     init {
-        val matchesDao: MatchDao? = application?.let { AppDatabase.getDatabase(it)?.matchDao() }
-        allMatches = matchesDao?.getAllData()
+        matchDao = application?.let {
+            AppDatabase.getDatabase(it)?.matchDao() }
+        allMatches = matchDao?.getAllData()
     }
 
 
